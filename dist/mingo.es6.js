@@ -461,7 +461,7 @@ function compare (a, b) {
 function sortBy (collection, fn, cmp) {
   let sorted = [];
   let result = [];
-  let hash = {};
+  let hash = new Map();
   cmp = cmp || compare;
 
   if (isEmpty(collection)) return collection
@@ -474,10 +474,10 @@ function sortBy (collection, fn, cmp) {
     if (isNil(key)) {
       result.push(obj);
     } else {
-      if (hash[key]) {
-        hash[key].push(obj);
+      if (hash.has(key)) {
+        hash.get(key).push(obj);
       } else {
-        hash[key] = [obj];
+        hash.set(key, [obj]);
       }
       sorted.push(key);
     }
@@ -487,8 +487,10 @@ function sortBy (collection, fn, cmp) {
   sorted.sort(cmp);
 
   for (let i = 0; i < sorted.length; i++) {
-    into(result, hash[sorted[i]]);
+    into(result, hash.get(sorted[i]));
   }
+
+  hash.clear();
 
   return result
 }
@@ -2024,16 +2026,17 @@ function $sort (collection, sortKeys, opt) {
 
     each(modifiers.reverse(), key => {
       let grouped = groupBy(coll, obj => resolve(obj, key));
-      let sortedIndex = {};
+      let sortedIndex = new Map();
 
       let indexKeys = sortBy(grouped.keys, (k, i) => {
-        sortedIndex[k] = i;
+        sortedIndex.set(k, i);
         return k
       }, cmp);
 
       if (sortKeys[key] === -1) indexKeys.reverse();
       coll = [];
-      each(indexKeys, k => into(coll, grouped.groups[sortedIndex[k]]));
+      each(indexKeys, k => into(coll, grouped.groups[sortedIndex.get(k)]));
+      sortedIndex.clear();
     });
 
     return coll

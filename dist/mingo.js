@@ -526,7 +526,7 @@
   function sortBy(collection, fn, cmp) {
     var sorted = [];
     var result = [];
-    var hash = {};
+    var hash = new Map();
     cmp = cmp || compare;
     if (isEmpty(collection)) return collection;
 
@@ -537,10 +537,10 @@
       if (isNil(key)) {
         result.push(obj);
       } else {
-        if (hash[key]) {
-          hash[key].push(obj);
+        if (hash.has(key)) {
+          hash.get(key).push(obj);
         } else {
-          hash[key] = [obj];
+          hash.set(key, [obj]);
         }
 
         sorted.push(key);
@@ -551,9 +551,10 @@
     sorted.sort(cmp);
 
     for (var _i = 0; _i < sorted.length; _i++) {
-      into(result, hash[sorted[_i]]);
+      into(result, hash.get(sorted[_i]));
     }
 
+    hash.clear();
     return result;
   }
   /**
@@ -2226,16 +2227,17 @@
         var grouped = groupBy(coll, function (obj) {
           return resolve(obj, key);
         });
-        var sortedIndex = {};
+        var sortedIndex = new Map();
         var indexKeys = sortBy(grouped.keys, function (k, i) {
-          sortedIndex[k] = i;
+          sortedIndex.set(k, i);
           return k;
         }, cmp);
         if (sortKeys[key] === -1) indexKeys.reverse();
         coll = [];
         each(indexKeys, function (k) {
-          return into(coll, grouped.groups[sortedIndex[k]]);
+          return into(coll, grouped.groups[sortedIndex.get(k)]);
         });
+        sortedIndex.clear();
       });
       return coll;
     });
