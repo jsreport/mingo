@@ -1,5 +1,5 @@
 {
-  "name": "mingo",
+  "name": "@jsreport/mingo",
   "version": "2.4.0",
   "description": "JavaScript implementation of MongoDB query language",
   "main": "dist/mingo.js",
