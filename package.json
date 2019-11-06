@@ -10,7 +10,7 @@
     "build.es": "rollup -c config/rollup.es.js",
     "build": "npm run build.umd && npm run build.es",
     "release": "npm run clean && npm run build && npm test",
-    "postrelease": "uglifyjs dist/mingo.js --comments '/^!/' --compress --mangle --source-map dist/mingo.min.map > dist/mingo.min.js",
+    "postrelease": "uglifyjs dist/mingo.js --comments '/^!/' --compress --mangle --source-map \"url='dist/mingo.min.js.map'\" --output dist/mingo.min.js",
     "test": "NODE_ENV=test nyc --reporter=lcov --reporter=text tape test/*.js test/**/*.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
@@ -26,7 +26,9 @@
     "CHANGELOG.md"
   ],
   "devDependencies": {
-    "babel-plugin-external-helpers": "6.22.0",
+    "@babel/core": "7.7.0",
+    "@babel/plugin-external-helpers": "7.2.0",
+    "@babel/preset-env": "7.7.1",
     "babel-plugin-istanbul": "5.2.0",
     "babel-preset-env": "1.7.0",
     "backbone": "1.4.0",
@@ -42,7 +44,7 @@
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "5.2.0",
     "tape": "4.11.0",
-    "uglify-js": "3.6.8"
+    "uglify-js": "3.6.4"
   },
   "keywords": [
     "util",
@@ -60,5 +62,6 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kofrasa/mingo/issues"
-  }
+  },
+  "dependencies": {}
 }

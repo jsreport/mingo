@@ -1215,7 +1215,6 @@ function baseIterator (nextFn, iteratees, buffer) {
 
   let done = false;
   let index = -1;
-  let hashes = {}; // used for LAZY_UNIQ
   let bIndex = 0; // index for the buffer
 
   return function (b) {
@@ -1269,8 +1268,6 @@ function baseIterator (nextFn, iteratees, buffer) {
     } catch (e) {
       if (e !== DONE) throw e
     }
-
-    hashes = null; // clear the hash cache
     done = true;
     return { done: true }
   }
@@ -1874,9 +1871,7 @@ function $project (collection, expr, opt) {
         value = obj[key];
       } else if (isString(subExpr)) {
         value = computeValue(obj, subExpr, key);
-      } else if (inArray([1, true], subExpr)) {
-        // For direct projections, we use the resolved object value
-      } else if (isObject(subExpr)) {
+      } else if (inArray([1, true], subExpr)) ; else if (isObject(subExpr)) {
         let operator = keys(subExpr);
         operator = operator.length > 1 ? false : operator[0];
 
@@ -2539,6 +2534,7 @@ function remove (collection, criteria) {
 /**
  * Query and Projection Operators. https://docs.mongodb.com/manual/reference/operator/query/
  */
+
 function $cmp(a, b, fn) {
   return ensureArray(a).some(x => getType(x) === getType(b) && fn(x,b))
 }
